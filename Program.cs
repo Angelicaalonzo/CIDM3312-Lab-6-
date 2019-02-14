@@ -7,6 +7,8 @@ namespace Lab_6
 {
     class Program
     {
+
+        // creating and deleting the database every time the program ran. 
         static void Main(string[] args)
         {
             using (var db = new StudioContent())
@@ -15,6 +17,8 @@ namespace Lab_6
                 db.Database.EnsureCreated(); 
             }
             
+
+            //adding movies to century fox  
             using (var db = new StudioContent())
             {
                 studio CenturyFox = new studio{
@@ -30,6 +34,7 @@ namespace Lab_6
                     }
                 };
 
+                //adding century and Universal 
                 studio Universal = new studio {
                         studioName= "Universal Pictures"
 
@@ -39,18 +44,49 @@ namespace Lab_6
                 db.SaveChanges();
             
             }
-
+             
+            // adding jurassic park to Universal 
             using (var db = new StudioContent())
             {
-                Movie movies = new Movie {movieName = "Jurassic Park", genre = "Action"};
-
-                db.Add (movies);
+                Movie Add = new Movie {movieName = "Jurassic Park", genre = "Action"};
+                studio updatedstudio = db.studios.Include(b => b.movies).Where (b => b.studioName =="Universal Pictures").First();
+                updatedstudio.movies.Add(Add);
+                db.SaveChanges();
             }
 
+            //moving Apollo 13 to Universal 
             using (var db = new StudioContent())
             {
-                
+                Movie movies = db.movies.Where(p => p.movieName == "Apollo 13").First();
+                movies.studio = db.studios.Where (b =>b.studioName == "Universal Pictures").First(); 
+                db.SaveChanges(); 
+        
+            };
+            // delete the instance of Deadpool
+            using ( var db = new StudioContent())
+            {
+                Movie d = db.movies.Where(p => p.movieName == "Deadpool").First();
+                db.Remove(d);
+                db.SaveChanges(); 
             }
+
+            // listing all movies and their studios
+        using (var db = new StudioContent())        
+        {
+            var studios = db.studios.Include(b =>b.movies);
+           foreach ( var b in studios ){
+
+               Console.WriteLine (b);
+               
+               foreach(var p in b.movies)
+               {
+                Console.WriteLine("\t" + p);
+               }
+           }
+        }
+
+
+            
 
 
 

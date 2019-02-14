@@ -30,14 +30,14 @@ public class StudioContent : DbContext
     }
 
 public class Movie{
-    public int moviesId{get; set; }
+    public int movieId{get; set; }
     public string movieName {get; set; }
     public string genre{ get; set; }
     public int studioID {get; set; }
     public studio studio {get; set; }
 
     public override string ToString(){
-        return $"movies {moviesId}- {movieName}";
+        return $"movies {movieId}- {movieName}";
     }
 
 }
